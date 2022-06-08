@@ -3,6 +3,7 @@
     <Tasks
         @toggle-reminder="toggleReminder"
         @delete-task="deleteTask"
+        @edit-task="editTask"
         :tasks="tasks"
     />
 </template>
@@ -35,6 +36,17 @@ export default {
             });
             const data = await res.json();
             this.tasks = [...this.tasks, data];
+        },
+        async editTask(task) {
+            let id = task.id;
+            await fetch(`api/tasks/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(task)
+            });
+            this.tasks = await this.fetchTasks();
         },
         async deleteTask(id) {
             if (confirm('Are you sure?')) {
